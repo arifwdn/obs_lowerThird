@@ -3,320 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kontroler Lower Third Islami - Wide Layout</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e293b;
-            color: #f8fafc;
-            padding: 30px;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-        
-        /* Mengubah container utama menjadi menyamping (Wide) */
-        .main-wrapper {
-            display: flex;
-            gap: 25px;
-            width: 100%;
-            max-width: 1200px; /* Lebar maksimal panel */
-        }
-
-        /* Panel Live Controller (Kiri) */
-        .container-live {
-            background-color: #0f172a;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            flex: 1; /* Proporsi ukuran */
-            min-width: 380px;
-            border: 2px solid #10b981;
-            height: fit-content;
-        }
-
-        /* Panel Database Pembicara (Kanan) */
-        .panel-list {
-            background-color: #0f172a;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            flex: 2; /* Mengambil sisa ruang lebih luas ke kanan */
-            border: 2px solid #334155;
-            display: flex;
-            flex-direction: column;
-        }
-
-        h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 22px;
-            border-bottom: 2px solid #1e293b;
-            padding-bottom: 10px;
-        }
-        .live-title { color: #10b981; }
-        .list-title { color: #38bdf8; }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .form-group {
-            flex: 1;
-            margin-bottom: 15px;
-        }
-        .form-row .form-group {
-            margin-bottom: 0; /* Reset margin jika di dalam baris */
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #94a3b8;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #334155;
-            background-color: #1e293b;
-            color: #fff;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #10b981;
-        }
-
-        /* Tombol Kontrol */
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        button {
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-show { flex: 1; background-color: #10b981; color: #0f172a; }
-        .btn-show:hover { background-color: #059669; }
-        .btn-hide { flex: 1; background-color: #ef4444; color: #fff; }
-        .btn-hide:hover { background-color: #dc2626; }
-        .btn-update { width: 100%; background-color: #eab308; color: #0f172a; }
-        .btn-update:hover { background-color: #ca8a04; }
-        .btn-add { background-color: #38bdf8; color: #0f172a; height: 43px; margin-top: 24px; padding: 0 20px; }
-        .btn-add:hover { background-color: #0ea5e9; }
-        
-        /* Area List Data - Menggunakan Grid menyamping */
-        .speaker-list-container {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-top: 15px;
-            border: 1px solid #1e293b;
-            border-radius: 6px;
-            padding: 10px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* List berbaris ke samping otomatis */
-            gap: 12px;
-        }
-
-        .speaker-item {
-            background-color: #1e293b;
-            padding: 12px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #38bdf8;
-            cursor: pointer;
-            transition: all 0.2s;
-            height: fit-content;
-        }
-        .speaker-item:hover {
-            background-color: #2d3748;
-            transform: translateY(-2px);
-        }
-        .speaker-info {
-            flex-grow: 1;
-            margin-right: 10px;
-            overflow: hidden;
-        }
-        .speaker-name {
-            font-weight: bold;
-            color: #fff;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .speaker-title {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-top: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .btn-delete {
-            background-color: #eb4034;
-            color: white;
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 4px;
-            font-weight: normal;
-        }
-        .btn-delete:hover { background-color: #bd2a20; }
-        .status { text-align: center; margin-top: 15px; font-size: 13px; color: #64748b; }
-    </style>
+    <title>Islamic LT - Phone Controller</title>
+    <link rel="stylesheet" href="src/style.css">
 </head>
-<body>
+<body class="body-controller">
 
-<div class="main-wrapper">
-    
-    <div class="container-live">
-        <h2 class="live-title">🕌 Live Controller</h2>
-        
-        <div class="form-group">
-            <label for="input-name">Nama Aktif (On Air)</label>
-            <input type="text" id="input-name" value="Ustadz Dr. H. Ahmad Fauzi">
-        </div>
-        
-        <div class="form-group">
-            <label for="input-title">Jabatan / Judul Aktif</label>
-            <input type="text" id="input-title" value="Kajian Rutin: Menjaga Keikhlasan Hati">
-        </div>
-        
-        <button class="btn-update" onclick="updateData()">1. Update Teks Ke Layar</button>
-        
-        <div class="btn-group">
-            <button class="btn-show" onclick="actionLT('show')">2. TAMPILKAN (IN)</button>
-            <button class="btn-hide" onclick="actionLT('hide')">3. SEMBUNYIKAN (OUT)</button>
-        </div>
+    <div class="phone-container">
+        <header class="ctrl-header">
+            <h2>🕌 LT Controller</h2>
+            <div class="status-badge" id="status-obs">OBS Connected</div>
+        </header>
 
-        <div class="status">Status: Terhubung dengan OBS Overlay</div>
-    </div>
-
-    <div class="panel-list">
-        <h2 class="list-title">👥 Daftar Database Pembicara</h2>
-        
-        <div class="form-row">
-            <div class="form-group" style="flex: 2;">
-                <label>Nama Pembicara Baru</label>
-                <input type="text" id="list-name" placeholder="Contoh: Ustadz Adi Hidayat, Lc">
+        <section class="ctrl-section live-panel">
+            <h3>🔴 Live On-Air</h3>
+            <div class="live-display">
+                <p id="live-name-display">Belum ada pembicara</p>
+                <span id="live-title-display">Silakan pilih dari list</span>
             </div>
-            <div class="form-group" style="flex: 2;">
-                <label>Sub-title / Tema Kajian</label>
-                <input type="text" id="list-title" placeholder="Contoh: Pembahasan Kitab Riyadhus Shalihin">
+            
+            <div class="main-actions">
+                <button class="btn btn-in" onclick="triggerAction('show')">🎬 IN (Tampil)</button>
+                <button class="btn btn-out" onclick="triggerAction('hide')">⏹️ OUT (Sembunyi)</button>
             </div>
-            <button class="btn-add" onclick="addSpeaker()">➕ Tambah</button>
-        </div>
-        
-        <div class="speaker-list-container" id="speaker-list">
-            </div>
-    </div>
+        </section>
 
-</div>
-
-<script>
-    // Data bawaan awal
-    let speakers = [
-        { name: "Ustadz Dr. H. Ahmad Fauzi", title: "Kajian Rutin: Menjaga Keikhlasan Hati" },
-        { name: "Prof. KH. Syukron Ma'mun", title: "Tafsir Al-Qur'an Surah Al-Hujurat" },
-        { name: "Habib Ali Al-Jufri", title: "Akhlak Mulia dalam Kehidupan Modern" },
-        { name: "KH. Bahauddin Nursalim", title: "Ngaji Fiqih & Tasawuf Kontemporer" },
-        { name: "Ustadz Abdul Somad, Lc.", title: "Ulasan Hadits Arbain Nawawi" }
-    ];
-
-    window.onload = function() {
-        if(localStorage.getItem('db_speakers')) {
-            speakers = JSON.parse(localStorage.getItem('db_speakers'));
-        }
-        renderList();
-        updateData();
-    };
-
-    // Merender list menjadi susunan kotak kesamping (Grid)
-    function renderList() {
-        const listContainer = document.getElementById('speaker-list');
-        listContainer.innerHTML = '';
-
-        speakers.forEach((speaker, index) => {
-            const item = document.createElement('div');
-            item.className = 'speaker-item';
-            item.onclick = function(e) {
-                if(e.target.tagName !== 'BUTTON') {
-                    selectSpeaker(index);
-                }
-            };
-
-            item.innerHTML = `
-                <div class="speaker-info">
-                    <div class="speaker-name" title="${speaker.name}">${speaker.name}</div>
-                    <div class="speaker-title" title="${speaker.title}">${speaker.title}</div>
+        <section class="ctrl-section">
+            <h3>⚙️ Settings</h3>
+            <div class="settings-grid">
+                <div class="form-group-inline">
+                    <label>Auto-Hide (Detik)</label>
+                    <input type="number" id="setting-time" value="7" min="0">
                 </div>
-                <button class="btn-delete" onclick="deleteSpeaker(${index})">Hapus</button>
-            `;
-            listContainer.appendChild(item);
-        });
+                <div class="form-group-inline checkbox-group">
+                    <input type="checkbox" id="setting-auto-hide" checked>
+                    <label for="setting-auto-hide">Aktifkan Timer</label>
+                </div>
+            </div>
+            <button class="btn btn-reload" onclick="triggerAction('reload')">🔄 Auto-Reload Viewer</button>
+        </section>
 
-        localStorage.setItem('db_speakers', JSON.stringify(speakers));
-    }
+        <section class="ctrl-section">
+            <h3>➕ Tambah Pembicara</h3>
+            <div class="form-group">
+                <input type="text" id="input-name" placeholder="Nama Pembicara...">
+            </div>
+            <div class="form-group">
+                <input type="text" id="input-title" placeholder="Sub-title / Tema Kajian...">
+            </div>
+            <button class="btn btn-add" onclick="addSpeaker()">Simpan ke List</button>
+        </section>
 
-    function selectSpeaker(index) {
-        document.getElementById('input-name').value = speakers[index].name;
-        document.getElementById('input-title').value = speakers[index].title;
-    }
+        <section class="ctrl-section">
+            <h3>👥 List Pembicara</h3>
+            <div class="speaker-list" id="speaker-list-area">
+                </div>
+        </section>
+    </div>
 
-    function addSpeaker() {
-        const nameInput = document.getElementById('list-name');
-        const titleInput = document.getElementById('list-title');
-
-        if(nameInput.value.trim() === "" || titleInput.value.trim() === "") {
-            alert("Nama dan Title tidak boleh kosong!");
-            return;
-        }
-
-        speakers.push({
-            name: nameInput.value,
-            title: titleInput.value
-        });
-
-        nameInput.value = "";
-        titleInput.value = "";
-        
-        renderList();
-    }
-
-    function deleteSpeaker(index) {
-        if(confirm("Hapus pembicara ini dari daftar?")) {
-            speakers.splice(index, 1);
-            renderList();
-        }
-    }
-
-    // --- SINKRONISASI KE OBS ---
-    function updateData() {
-        const name = document.getElementById('input-name').value;
-        const title = document.getElementById('input-title').value;
-        
-        localStorage.setItem('lt_name', name);
-        localStorage.setItem('lt_title', title);
-        localStorage.setItem('lt_timestamp', Date.now()); 
-    }
-
-    function actionLT(action) {
-        updateData();
-        localStorage.setItem('lt_action', action);
-        localStorage.setItem('lt_action_timestamp', Date.now());
-    }
-</script>
+    <script src="src/controller.js"></script>
 </body>
 </html>

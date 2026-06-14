@@ -1,61 +1,44 @@
-const container = document.getElementById('lower-third-container');
-const mainNameTxt = document.getElementById('main-name');
-const subTitleTxt = document.getElementById('sub-title');
-const logoZone = document.getElementById('logo-zone');
-const displayLogo = document.getElementById('display-logo');
+const wrapper = document.getElementById('lt-wrapper');
+const nameEl = document.getElementById('lt-name');
+const titleEl = document.getElementById('lt-title');
+let autoHideTimer = null;
+
+function loadData() {
+    if(localStorage.getItem('lt_name')) nameEl.innerText = localStorage.getItem('lt_name');
+    if(localStorage.getItem('lt_title')) titleEl.innerText = localStorage.getItem('lt_title');
+}
 
 window.addEventListener('storage', function(e) {
-    if (e.key === 'l3_live_stream_rgba') {
-        const data = JSON.parse(e.newValue);
+    if (e.key === 'lt_timestamp') {
+        loadData();
+    }
+    
+    if (e.key === 'lt_action_timestamp') {
+        const action = localStorage.getItem('lt_action');
         
-        if (data && data.show) {
-            // 1. Ganti Konten Teks
-            mainNameTxt.innerText = data.name;
-            subTitleTxt.innerText = data.sub || "";
-
-            // 2. Suntik Properti Style RGBA & Ukuran Dinamis
-            if (data.styles) {
-                const st = data.styles;
-                
-                // Gambar Latar / Warna Latar
-                if (data.bg) {
-                    container.style.backgroundImage = `url('${data.bg}')`;
-                    container.style.backgroundColor = "transparent";
-                } else {
-                    container.style.backgroundImage = 'none';
-                    container.style.backgroundColor = st.rgbaBg;
-                }
-
-                // Warna Garis Batas Kiri & Garis Pembatas Internal Logo
-                container.style.borderColor = st.rgbaBorder;
-                logoZone.style.borderColor = st.rgbaBorder;
-
-                // Mengatur Style Nama Utama
-                mainNameTxt.style.color = st.rgbaName;
-                mainNameTxt.style.fontSize = st.nameSize;
-                mainNameTxt.style.fontWeight = st.nameBold;
-                mainNameTxt.style.fontStyle = st.nameItalic;
-
-                // Mengatur Style Subtitle
-                subTitleTxt.style.color = st.rgbaSub;
-                subTitleTxt.style.fontSize = st.subSize;
-                subTitleTxt.style.fontWeight = st.subBold;
-                subTitleTxt.style.fontStyle = st.subItalic;
+        if (action === 'show') {
+            wrapper.classList.add('active');
+            
+            // Logika Auto-Hide Durasi
+            clearTimeout(autoHideTimer);
+            const isAutoHide = localStorage.getItem('lt_autohide') === "true";
+            if (isAutoHide) {
+                const duration = parseInt(localStorage.getItem('lt_duration') || 7) * 1000;
+                autoHideTimer = setTimeout(() => {
+                    wrapper.classList.remove('active');
+                }, duration);
             }
-
-            // 3. Kontrol Visibilitas Logo
-            if (data.logo) {
-                displayLogo.src = data.logo;
-                logoZone.style.display = "block";
-            } else {
-                logoZone.style.display = "none";
-            }
-
-            // Jalankan animasi masuk
-            container.classList.add('active');
-        } else {
-            // Jalankan animasi keluar
-            container.classList.remove('active');
+            
+        } else if (action === 'hide') {
+            clearTimeout(autoHideTimer);
+            wrapper.classList.remove('active');
+            
+        } else if (action === 'reload') {
+            // Fitur auto-reload halaman viewer OBS
+            location.reload();
         }
     }
 });
+
+// Memuat data awal saat OBS dinyalakan
+loadData();

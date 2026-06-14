@@ -1,147 +1,92 @@
-let logoBase64 = "";
-let bgBase64 = "";
-let speakersDatabase = [];
-let activeSpeakerId = null;
-
-// Fungsi Helper: Mengonversi HEX dan Alpha Slider menjadi string RGBA
-function getRgbaValue(hexId, opacityId) {
-    const hex = document.getElementById(hexId).value;
-    const alpha = document.getElementById(opacityId).value;
-    
-    let c = hex.substring(1).split('');
-    if(c.length === 3){
-        c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-    }
-    c = '0x' + c.join('');
-    
-    const r = (c >> 16) & 255;
-    const g = (c >> 8) & 255;
-    const b = c & 255;
-    
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
-// Listener file gambar
-document.getElementById('logoInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(ev) { logoBase64 = ev.target.result; autoUpdateLive(); };
-        reader.readAsDataURL(file);
-    }
-});
-
-document.getElementById('bgInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(ev) { bgBase64 = ev.target.result; autoUpdateLive(); };
-        reader.readAsDataURL(file);
-    }
-});
-
-// Daftarkan auto-update real-time untuk input gaya kustomisasi
-const allInputs = [
-    'bgColor', 'bgOpacity', 'borderColor', 'borderOpacity',
-    'nameColor', 'nameOpacity', 'nameSize', 'nameBold', 'nameItalic',
-    'subColor', 'subOpacity', 'subSize', 'subBold', 'subItalic'
+// Database pembicara bawaan awal
+let speakers = [
+    { name: "Ustadz Dr. H. Ahmad Fauzi", title: "Kajian Rutin: Menjaga Keikhlasan Hati" },
+    { name: "Prof. KH. Syukron Ma'mun", title: "Tafsir Al-Qur'an Surah Al-Hujurat" }
 ];
-allInputs.forEach(id => {
-    document.getElementById(id).addEventListener('input', autoUpdateLive);
-});
 
-function autoUpdateLive() {
-    if (activeSpeakerId) updateOBS();
+window.onload = function() {
+    if(localStorage.getItem('db_speakers_v2')) {
+        speakers = JSON.parse(localStorage.getItem('db_speakers_v2'));
+    }
+    renderList();
+    loadLiveDisplay();
+};
+
+function renderList() {
+    const listArea = document.getElementById('speaker-list-area');
+    listArea.innerHTML = '';
+
+    speakers.forEach((sp, index) => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        item.innerHTML = `
+            <div class="item-info">
+                <div class="item-name">${sp.name}</div>
+                <div class="item-title">${sp.title}</div>
+            </div>
+            <div class="item-actions">
+                <button class="btn btn-sm btn-list-show" onclick="liveDirect(${index})">SHOW</button>
+                <button class="btn btn-sm btn-list-hide" onclick="triggerAction('hide')">HIDE</button>
+                <button class="btn btn-sm btn-list-del" onclick="deleteSpeaker(${index})">❌</button>
+            </div>
+        `;
+        listArea.appendChild(item);
+    });
+
+    localStorage.setItem('db_speakers_v2', JSON.stringify(speakers));
 }
 
 function addSpeaker() {
-    const nameInput = document.getElementById('speakerName');
-    const subInput = document.getElementById('speakerSub');
-    if (!nameInput.value.trim()) return;
+    const name = document.getElementById('input-name').value.trim();
+    const title = document.getElementById('input-title').value.trim();
 
-    speakersDatabase.push({
-        id: Date.now().toString(),
-        name: nameInput.value,
-        sub: subInput.value
-    });
-    saveDatabase();
-    renderTable();
-    nameInput.value = ""; subInput.value = "";
+    if(!name || !title) return alert("Nama dan sub-title wajib diisi!");
+
+    speakers.push({ name, title });
+    document.getElementById('input-name').value = '';
+    document.getElementById('input-title').value = '';
+    renderList();
 }
 
-function deleteSpeaker(id) {
-    speakersDatabase = speakersDatabase.filter(s => s.id !== id);
-    if (activeSpeakerId === id) clearLowerThird();
-    saveDatabase();
-    renderTable();
+function deleteSpeaker(index) {
+    if(confirm("Hapus pembicara dari list?")) {
+        speakers.splice(index, 1);
+        renderList();
+    }
 }
 
-function showToOBS(id) {
-    activeSpeakerId = id;
-    renderTable();
-    updateOBS();
+// Fungsi tombol 'SHOW' di samping list pembicara
+function liveDirect(index) {
+    const selected = speakers[index];
+    
+    // Update data live di localStorage
+    localStorage.setItem('lt_name', selected.name);
+    localStorage.setItem('lt_title', selected.title);
+    localStorage.setItem('lt_timestamp', Date.now());
+    
+    // Update tampilan di layar HP controller
+    loadLiveDisplay();
+
+    // Pemicu animasi masuk
+    triggerAction('show');
 }
 
-function updateOBS() {
-    const speaker = speakersDatabase.find(s => s.id === activeSpeakerId);
-    if (!speaker) return;
-
-    const dataToOBS = {
-        show: true,
-        activeId: activeSpeakerId,
-        name: speaker.name,
-        sub: speaker.sub,
-        logo: logoBase64,
-        bg: bgBase64,
-        styles: {
-            rgbaBg: getRgbaValue('bgColor', 'bgOpacity'),
-            rgbaBorder: getRgbaValue('borderColor', 'borderOpacity'),
-            rgbaName: getRgbaValue('nameColor', 'nameOpacity'),
-            rgbaSub: getRgbaValue('subColor', 'subOpacity'),
-            nameSize: document.getElementById('nameSize').value + 'px',
-            nameBold: document.getElementById('nameBold').checked ? 'bold' : 'normal',
-            nameItalic: document.getElementById('nameItalic').checked ? 'italic' : 'normal',
-            subSize: document.getElementById('subSize').value + 'px',
-            subBold: document.getElementById('subBold').checked ? 'bold' : 'normal',
-            subItalic: document.getElementById('subItalic').checked ? 'italic' : 'normal',
-        },
-        timestamp: Date.now()
-    };
-
-    localStorage.setItem('l3_live_stream_rgba', JSON.stringify(dataToOBS));
+function loadLiveDisplay() {
+    if(localStorage.getItem('lt_name')) {
+        document.getElementById('live-name-display').innerText = localStorage.getItem('lt_name');
+        document.getElementById('live-title-display').innerText = localStorage.getItem('lt_title');
+    }
 }
 
-function clearLowerThird() {
-    activeSpeakerId = null;
-    renderTable();
-    localStorage.setItem('l3_live_stream_rgba', JSON.stringify({ show: false, timestamp: Date.now() }));
+function triggerAction(action) {
+    localStorage.setItem('lt_action', action);
+    
+    // Ambil nilai setting auto-hide
+    const autoHideCheck = document.getElementById('setting-auto-hide').checked;
+    const duration = document.getElementById('setting-time').value || 7;
+    
+    localStorage.setItem('lt_autohide', autoHideCheck ? "true" : "false");
+    localStorage.setItem('lt_duration', duration);
+    
+    localStorage.setItem('lt_action_timestamp', Date.now());
 }
-
-function saveDatabase() {
-    localStorage.setItem('l3_speakers_db', JSON.stringify(speakersDatabase));
-}
-
-function renderTable() {
-    const tbody = document.getElementById('speaker-table-body');
-    tbody.innerHTML = "";
-    speakersDatabase.forEach(speaker => {
-        const isLive = speaker.id === activeSpeakerId;
-        const tr = document.createElement('tr');
-        if (isLive) tr.className = 'active-row';
-        tr.innerHTML = `
-            <td><strong>${speaker.name}</strong></td>
-            <td>${speaker.sub}</td>
-            <td class="actions">
-                <button class="btn-success" onclick="showToOBS('${speaker.id}')">${isLive ? 'LIVE' : 'TAYANG'}</button>
-                <button class="btn-danger" onclick="deleteSpeaker('${speaker.id}')">Hapus</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// Inisialisasi awal database dari localStorage saat halaman dimuat
-window.addEventListener('DOMContentLoaded', () => {
-    const savedDb = localStorage.getItem('l3_speakers_db');
-    if (savedDb) { speakersDatabase = JSON.parse(savedDb); renderTable(); }
-});
