@@ -2,21 +2,154 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>RGBA Lower Third Output</title>
-    <link rel="stylesheet" href="src/style.css">
-</head>
-<body class="viewer-body">
+    <title>Islamic Lower Third Overlay</title>
+    <style>
+        /* Reset & Canvas Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            background: transparent;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-    <div id="lower-third-container">
-        <div id="logo-zone">
-            <img id="display-logo" src="" alt="Logo">
+        /* Container Lower Third ditempatkan di pojok kiri bawah */
+        .lt-container {
+            position: absolute;
+            bottom: 100px;
+            left: 100px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        /* State Animasi Masuk */
+        .lt-container.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Kotak Utama (Nama) */
+        .main-box {
+            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+            border-left: 8px solid #fbbf24; /* Aksen Emas */
+            padding: 15px 40px 15px 30px;
+            min-width: 450px;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border-top-right-radius: 20px;
+            clip-path: polygon(0 0, 95% 0, 100% 100%, 0% 100%);
+            z-index: 2;
+        }
+
+        /* Ornamen Geometri Islami (Efek Watermark di Background) */
+        .main-box::before {
+            content: "";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M30 0 L38 22 L60 30 L38 38 L30 60 L22 38 L0 30 L22 22 Z" fill="%23fbb424" opacity="0.15"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .name-text {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+
+        /* Kotak Sub (Title) */
+        .sub-box {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            padding: 8px 30px 8px 25px;
+            align-self: flex-start;
+            margin-top: -2px; /* overlap sedikit agar rapi */
+            min-width: 350px;
+            max-width: 750px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-bottom-right-radius: 15px;
+            clip-path: polygon(0 0, 93% 0, 100% 100%, 0% 100%);
+            z-index: 1;
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.5s ease 0.2s; /* Delay sedikit setelah nama muncul */
+        }
+
+        .lt-container.active .sub-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .title-text {
+            color: #064e3b; /* Hijau tua agar kontras dengan emas */
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lt-container" id="lt-wrapper">
+        <div class="main-box">
+            <div class="name-text" id="lt-name">Ustadz Dr. H. Ahmad Fauzi</div>
         </div>
-        <div id="text-zone">
-            <h1 id="main-name">Nama Narasumber</h1>
-            <p id="sub-title">Jabatan / Deskripsi</p>
+        <div class="sub-box">
+            <div class="title-text" id="lt-title">Kajian Rutin: Menjaga Keikhlasan Hati</div>
         </div>
     </div>
 
-    <script src="src/viewer.js"></script>
+    <script>
+        const wrapper = document.getElementById('lt-wrapper');
+        const nameEl = document.getElementById('lt-name');
+        const titleEl = document.getElementById('lt-title');
+
+        // Fungsi memuat data teks dari LocalStorage
+        function loadData() {
+            if(localStorage.getItem('lt_name')) {
+                nameEl.innerText = localStorage.getItem('lt_name');
+            }
+            if(localStorage.getItem('lt_title')) {
+                titleEl.innerText = localStorage.getItem('lt_title');
+            }
+        }
+
+        // Dengar perubahan dari controller
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'lt_timestamp') {
+                loadData();
+            }
+            
+            if (e.key === 'lt_action_timestamp') {
+                const action = localStorage.getItem('lt_action');
+                if(action === 'show') {
+                    wrapper.classList.add('active');
+                } else if(action === 'hide') {
+                    wrapper.classList.remove('active');
+                }
+            }
+        });
+
+        // Load data awal saat OBS meload halaman ini
+        loadData();
+    </script>
 </body>
 </html>

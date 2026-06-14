@@ -2,108 +2,321 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Advanced L3 Controller (RGBA)</title>
-    <link rel="stylesheet" href="src/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontroler Lower Third Islami - Wide Layout</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 30px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* Mengubah container utama menjadi menyamping (Wide) */
+        .main-wrapper {
+            display: flex;
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px; /* Lebar maksimal panel */
+        }
+
+        /* Panel Live Controller (Kiri) */
+        .container-live {
+            background-color: #0f172a;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            flex: 1; /* Proporsi ukuran */
+            min-width: 380px;
+            border: 2px solid #10b981;
+            height: fit-content;
+        }
+
+        /* Panel Database Pembicara (Kanan) */
+        .panel-list {
+            background-color: #0f172a;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            flex: 2; /* Mengambil sisa ruang lebih luas ke kanan */
+            border: 2px solid #334155;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 22px;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 10px;
+        }
+        .live-title { color: #10b981; }
+        .list-title { color: #38bdf8; }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+        .form-row .form-group {
+            margin-bottom: 0; /* Reset margin jika di dalam baris */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #334155;
+            background-color: #1e293b;
+            color: #fff;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        /* Tombol Kontrol */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-show { flex: 1; background-color: #10b981; color: #0f172a; }
+        .btn-show:hover { background-color: #059669; }
+        .btn-hide { flex: 1; background-color: #ef4444; color: #fff; }
+        .btn-hide:hover { background-color: #dc2626; }
+        .btn-update { width: 100%; background-color: #eab308; color: #0f172a; }
+        .btn-update:hover { background-color: #ca8a04; }
+        .btn-add { background-color: #38bdf8; color: #0f172a; height: 43px; margin-top: 24px; padding: 0 20px; }
+        .btn-add:hover { background-color: #0ea5e9; }
+        
+        /* Area List Data - Menggunakan Grid menyamping */
+        .speaker-list-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* List berbaris ke samping otomatis */
+            gap: 12px;
+        }
+
+        .speaker-item {
+            background-color: #1e293b;
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #38bdf8;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: fit-content;
+        }
+        .speaker-item:hover {
+            background-color: #2d3748;
+            transform: translateY(-2px);
+        }
+        .speaker-info {
+            flex-grow: 1;
+            margin-right: 10px;
+            overflow: hidden;
+        }
+        .speaker-name {
+            font-weight: bold;
+            color: #fff;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .speaker-title {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-delete {
+            background-color: #eb4034;
+            color: white;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+        .btn-delete:hover { background-color: #bd2a20; }
+        .status { text-align: center; margin-top: 15px; font-size: 13px; color: #64748b; }
+    </style>
 </head>
-<body class="controller-body">
+<body>
 
-    <div class="container">
-        <div class="panel">
-            <h2>Kustomisasi Desain Lower Third (RGBA)</h2>
-            
-            <div class="row">
-                <div class="col">
-                    <label>Logo (PNG/JPG)</label>
-                    <input type="file" id="logoInput" accept="image/*">
-                </div>
-                <div class="col">
-                    <label>Background Gambar (Opsional)</label>
-                    <input type="file" id="bgInput" accept="image/*">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label>Warna BG & Opacity</label>
-                    <div class="color-picker-wrapper">
-                        <input type="color" id="bgColor" value="#0f0f19">
-                        <input type="range" id="bgOpacity" class="opacity-slider" min="0" max="1" step="0.05" value="0.95">
-                    </div>
-                </div>
-                <div class="col">
-                    <label>Warna Garis Batas & Opacity</label>
-                    <div class="color-picker-wrapper">
-                        <input type="color" id="borderColor" value="#29b6f6">
-                        <input type="range" id="borderOpacity" class="opacity-slider" min="0" max="1" step="0.05" value="1.0">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col" style="background: #1e1e24; padding: 10px; border-radius: 4px;">
-                    <label style="color:#4fc3f7;">Gaya Nama Utama</label>
-                    <label>Warna Teks & Opacity</label>
-                    <div class="color-picker-wrapper">
-                        <input type="color" id="nameColor" value="#ffffff">
-                        <input type="range" id="nameOpacity" class="opacity-slider" min="0" max="1" step="0.05" value="1.0">
-                    </div>
-                    
-                    <label style="margin-top:8px;">Ukuran Teks (px)</label>
-                    <input type="range" id="nameSize" min="20" max="60" value="36">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="nameBold" checked> <label for="nameBold">Tebal</label>
-                        <input type="checkbox" id="nameItalic"> <label for="nameItalic">Miring</label>
-                    </div>
-                </div>
-
-                <div class="col" style="background: #1e1e24; padding: 10px; border-radius: 4px;">
-                    <label style="color:#4fc3f7;">Gaya Sub Title</label>
-                    <label>Warna Teks & Opacity</label>
-                    <div class="color-picker-wrapper">
-                        <input type="color" id="subColor" value="#29b6f6">
-                        <input type="range" id="subOpacity" class="opacity-slider" min="0" max="1" step="0.05" value="1.0">
-                    </div>
-                    
-                    <label style="margin-top:8px;">Ukuran Teks (px)</label>
-                    <input type="range" id="subSize" min="14" max="35" value="20">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="subBold"> <label for="subBold">Tebal</label>
-                        <input type="checkbox" id="subItalic"> <label for="subItalic">Miring</label>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="btn-danger" style="width: 100%; padding: 12px; margin-top: 15px;" onclick="clearLowerThird()">SEMBUNYIKAN / OFF (CLEAR OBS)</button>
+<div class="main-wrapper">
+    
+    <div class="container-live">
+        <h2 class="live-title">🕌 Live Controller</h2>
+        
+        <div class="form-group">
+            <label for="input-name">Nama Aktif (On Air)</label>
+            <input type="text" id="input-name" value="Ustadz Dr. H. Ahmad Fauzi">
+        </div>
+        
+        <div class="form-group">
+            <label for="input-title">Jabatan / Judul Aktif</label>
+            <input type="text" id="input-title" value="Kajian Rutin: Menjaga Keikhlasan Hati">
+        </div>
+        
+        <button class="btn-update" onclick="updateData()">1. Update Teks Ke Layar</button>
+        
+        <div class="btn-group">
+            <button class="btn-show" onclick="actionLT('show')">2. TAMPILKAN (IN)</button>
+            <button class="btn-hide" onclick="actionLT('hide')">3. SEMBUNYIKAN (OUT)</button>
         </div>
 
-        <div class="panel">
-            <h3>+ Tambah Narasumber Baru</h3>
-            <div class="row">
-                <div class="col">
-                    <input type="text" id="speakerName" placeholder="Nama Narasumber">
-                </div>
-                <div class="col">
-                    <input type="text" id="speakerSub" placeholder="Jabatan / Sub Title">
-                </div>
-                <button class="btn-success" onclick="addSpeaker()">+ Simpan</button>
-            </div>
-        </div>
-
-        <div class="panel">
-            <h3>Daftar Narasumber</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>Sub Title</th>
-                        <th style="width: 160px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="speaker-table-body"></tbody>
-            </table>
-        </div>
+        <div class="status">Status: Terhubung dengan OBS Overlay</div>
     </div>
 
-    <script src="src/controller.js"></script>
+    <div class="panel-list">
+        <h2 class="list-title">👥 Daftar Database Pembicara</h2>
+        
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label>Nama Pembicara Baru</label>
+                <input type="text" id="list-name" placeholder="Contoh: Ustadz Adi Hidayat, Lc">
+            </div>
+            <div class="form-group" style="flex: 2;">
+                <label>Sub-title / Tema Kajian</label>
+                <input type="text" id="list-title" placeholder="Contoh: Pembahasan Kitab Riyadhus Shalihin">
+            </div>
+            <button class="btn-add" onclick="addSpeaker()">➕ Tambah</button>
+        </div>
+        
+        <div class="speaker-list-container" id="speaker-list">
+            </div>
+    </div>
+
+</div>
+
+<script>
+    // Data bawaan awal
+    let speakers = [
+        { name: "Ustadz Dr. H. Ahmad Fauzi", title: "Kajian Rutin: Menjaga Keikhlasan Hati" },
+        { name: "Prof. KH. Syukron Ma'mun", title: "Tafsir Al-Qur'an Surah Al-Hujurat" },
+        { name: "Habib Ali Al-Jufri", title: "Akhlak Mulia dalam Kehidupan Modern" },
+        { name: "KH. Bahauddin Nursalim", title: "Ngaji Fiqih & Tasawuf Kontemporer" },
+        { name: "Ustadz Abdul Somad, Lc.", title: "Ulasan Hadits Arbain Nawawi" }
+    ];
+
+    window.onload = function() {
+        if(localStorage.getItem('db_speakers')) {
+            speakers = JSON.parse(localStorage.getItem('db_speakers'));
+        }
+        renderList();
+        updateData();
+    };
+
+    // Merender list menjadi susunan kotak kesamping (Grid)
+    function renderList() {
+        const listContainer = document.getElementById('speaker-list');
+        listContainer.innerHTML = '';
+
+        speakers.forEach((speaker, index) => {
+            const item = document.createElement('div');
+            item.className = 'speaker-item';
+            item.onclick = function(e) {
+                if(e.target.tagName !== 'BUTTON') {
+                    selectSpeaker(index);
+                }
+            };
+
+            item.innerHTML = `
+                <div class="speaker-info">
+                    <div class="speaker-name" title="${speaker.name}">${speaker.name}</div>
+                    <div class="speaker-title" title="${speaker.title}">${speaker.title}</div>
+                </div>
+                <button class="btn-delete" onclick="deleteSpeaker(${index})">Hapus</button>
+            `;
+            listContainer.appendChild(item);
+        });
+
+        localStorage.setItem('db_speakers', JSON.stringify(speakers));
+    }
+
+    function selectSpeaker(index) {
+        document.getElementById('input-name').value = speakers[index].name;
+        document.getElementById('input-title').value = speakers[index].title;
+    }
+
+    function addSpeaker() {
+        const nameInput = document.getElementById('list-name');
+        const titleInput = document.getElementById('list-title');
+
+        if(nameInput.value.trim() === "" || titleInput.value.trim() === "") {
+            alert("Nama dan Title tidak boleh kosong!");
+            return;
+        }
+
+        speakers.push({
+            name: nameInput.value,
+            title: titleInput.value
+        });
+
+        nameInput.value = "";
+        titleInput.value = "";
+        
+        renderList();
+    }
+
+    function deleteSpeaker(index) {
+        if(confirm("Hapus pembicara ini dari daftar?")) {
+            speakers.splice(index, 1);
+            renderList();
+        }
+    }
+
+    // --- SINKRONISASI KE OBS ---
+    function updateData() {
+        const name = document.getElementById('input-name').value;
+        const title = document.getElementById('input-title').value;
+        
+        localStorage.setItem('lt_name', name);
+        localStorage.setItem('lt_title', title);
+        localStorage.setItem('lt_timestamp', Date.now()); 
+    }
+
+    function actionLT(action) {
+        updateData();
+        localStorage.setItem('lt_action', action);
+        localStorage.setItem('lt_action_timestamp', Date.now());
+    }
+</script>
 </body>
 </html>
