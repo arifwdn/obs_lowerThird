@@ -145,104 +145,89 @@ input:focus { outline: none; border-color: #10b981; }
 /* ==========================================
    3. STYLE UNTUK VIEWER OBS (1920x1080)
    ========================================== */
-.body-viewer {
-    width: 1920px;
-    height: 1080px;
-    overflow: hidden;
-    background: transparent;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-}
+/* Container Lower Third ditempatkan di pojok kiri bawah */
+        .lt-container {
+            position: absolute;
+            bottom: 100px;
+            left: 100px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
 
-.lt-container {
-    position: absolute;
-    bottom: 80px;
-    left: 0;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 70px;
-    opacity: 0;
-    transform: translateX(-100px);
-    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-}
+        /* State Animasi Masuk */
+        .lt-container.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-.lt-container.active {
-    opacity: 1;
-    transform: translateX(0);
-}
+        /* Kotak Utama (Nama) */
+        .main-box {
+            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+            border-left: 8px solid #fbbf24; /* Aksen Emas */
+            padding: 15px 40px 15px 30px;
+            min-width: 450px;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border-top-right-radius: 20px;
+            clip-path: polygon(0 0, 95% 0, 100% 100%, 0% 100%);
+            z-index: 2;
+        }
 
-/* Badge Berisi Logo Masjid */
-.islamic-badge {
-    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-    height: 100%;
-    width: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 40px;
-    clip-path: polygon(0 0, 80% 0, 100% 100%, 0% 100%);
-    z-index: 4;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.3);
-}
+        /* Ornamen Geometri Islami (Efek Watermark di Background) */
+        .main-box::before {
+            content: "";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M30 0 L38 22 L60 30 L38 38 L30 60 L22 38 L0 30 L22 22 Z" fill="%23fbb424" opacity="0.15"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
 
-.mosque-icon {
-    width: 38px;
-    height: 38px;
-    fill: #064e3b; /* Kontras Hijau di atas Emas */
-}
+        .name-text {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
 
-/* Kotak Nama */
-.name-box {
-    background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
-    height: 100%;
-    padding: 0 50px 0 30px;
-    display: flex;
-    align-items: center;
-    margin-left: -25px;
-    min-width: 450px;
-    max-width: 700px;
-    clip-path: polygon(0 0, 93% 0, 100% 100%, 7% 100%);
-    border-top: 3px solid #fbbf24;
-    z-index: 3;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.3);
-}
+        /* Kotak Sub (Title) */
+        .sub-box {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            padding: 8px 30px 8px 25px;
+            align-self: flex-start;
+            margin-top: -2px; /* overlap sedikit agar rapi */
+            min-width: 350px;
+            max-width: 750px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-bottom-right-radius: 15px;
+            clip-path: polygon(0 0, 93% 0, 100% 100%, 0% 100%);
+            z-index: 1;
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.5s ease 0.2s; /* Delay sedikit setelah nama muncul */
+        }
 
-.name-text {
-    color: #ffffff;
-    font-size: 28px;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
-    white-space: nowrap;
-}
+        .lt-container.active .sub-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
 
-/* Kotak Sub-Title */
-.title-box {
-    background: rgba(15, 23, 42, 0.9);
-    border-bottom: 3px solid #10b981;
-    height: 85%;
-    padding: 0 60px 0 40px;
-    display: flex;
-    align-items: center;
-    margin-left: -35px;
-    min-width: 600px;
-    max-width: 1000px;
-    clip-path: polygon(0 0, 96% 0, 100% 100%, 4% 100%);
-    z-index: 2;
-    backdrop-filter: blur(5px);
-    
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
-}
-
-.lt-container.active .title-box {
-    transform: scaleX(1);
-}
-
-.title-text {
-    color: #e2e8f0; 
-    font-size: 18px;
-    font-weight: 500;
-    white-space: nowrap;
-}
+        .title-text {
+            color: #064e3b; /* Hijau tua agar kontras dengan emas */
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
