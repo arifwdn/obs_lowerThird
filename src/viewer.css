@@ -74,7 +74,7 @@ body {
 
 /* Bar Atas (TITLE) */
 .bar-title {
-    background: linear-gradient(135deg, #00b34a 0%, #009933 80%);
+    background: linear-gradient(135deg, #009933 0%,#00b34a  80%);
     color: #ffffff;
     font-weight: bold;
     font-size: 22px;
@@ -87,7 +87,7 @@ body {
 
 /* Bar Bawah (DESCRIPTION) */
 .bar-desc {
-    background: linear-gradient(135deg, #f9df7b 0%, #e6c24a 100%);
+    background: linear-gradient(135deg, #967300 0%, #ffcc00  100%);
     color: #ffffff;
     font-weight: bold;
     font-size: 15px;

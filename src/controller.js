@@ -125,7 +125,6 @@ async function fetchJadwalSholat() {
     if(!kotaInput) return alert("Ketik nama kota dulu!");
 
     btn.innerText = "LOADING...";
-    btn.disabled = true;
 
     try {
         // Step 1: Cari ID Kota
@@ -150,7 +149,7 @@ async function fetchJadwalSholat() {
 
         if(sholatData.data && sholatData.data.jadwal) {
             const j = sholatData.data.jadwal;
-            const teksHasil = `✨ JADWAL SHOLAT UNTUK KOTA ${namaKota} & SEKITARNYA HARI INI -> IMSAK: ${j.imsak} | SUBUH: ${j.subuh} | TERBIT: ${j.terbit} | DZUHUR: ${j.dzuhur} | ASHAR: ${j.ashar} | MAGHRIB: ${j.maghrib} | ISYA: ${j.isya} --- Silakan laksanakan ibadah tepat pada waktunya.`;
+            const teksHasil = `Jadwal Sholat ${namaKota} & Sekitarnya hari ini Imsak: ${j.imsak} | Subuh: ${j.subuh} | Terbit: ${j.terbit} | Dzhuhur: ${j.dzuhur} | Ashar: ${j.ashar} | Maghrib: ${j.maghrib} | Isya: ${j.isya}`;
             
             document.getElementById('running-text-preview').value = teksHasil;
             lowerThirdData.runningText = teksHasil;
@@ -161,7 +160,6 @@ async function fetchJadwalSholat() {
         alert("Gagal memuat API Jadwal Sholat: " + error.message);
     } finally {
         btn.innerText = "🔄 GET DATA";
-        btn.disabled = false;
     }
 }
 
