@@ -118,6 +118,7 @@ body {
     border-radius: 6px;
     text-align: center;
     font-size: 14px;
+    /* width: 100%; */
 }
 
 #lists-container {

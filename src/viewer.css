@@ -9,6 +9,15 @@ body {
     font-family: Arial, sans-serif;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Container Utama Lower Third */
 .lower-third-container {
     position: absolute;
@@ -48,9 +57,11 @@ body {
 }
 
 .ornament-logo {
-    width: 85%;
-    height: 85%;
-    object-fit: contain;
+    width: 85px;
+    height: 85px;
+    object-fit: cover;
+    animation: spin 10s linear infinite;
+    z-index: 3;
 }
 
 /* Pembungkus Bar Text */
