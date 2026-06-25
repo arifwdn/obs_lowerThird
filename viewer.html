@@ -2,17 +2,24 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Islamic Lower Third Overlay</title>
-    <link rel="stylesheet" href="src/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lower Third Viewer</title>
+    <link rel="stylesheet" href="src/viewer.css">
 </head>
 <body>
 
-    <div class="lt-container" id="lt-wrapper">
-        <div class="main-box">
-            <div class="name-text" id="lt-name">Ustadz Dr. H. Ahmad Fauzi</div>
+    <div id="lower-third" class="lower-third-container hide">
+        <div class="logo-container">
+            <img src="src/logo.png" alt="Logo" class="ornament-logo" onerror="this.style.display='none'">
         </div>
-        <div class="sub-box">
-            <div class="title-text" id="lt-title">Kajian Rutin: Menjaga Keikhlasan Hati</div>
+        
+        <div class="text-container">
+            <div class="bar-title">
+                <span id="view-title">TITLE</span>
+            </div>
+            <div class="bar-desc">
+                <span id="view-desc">DESCRIPTION</span>
+            </div>
         </div>
     </div>
 

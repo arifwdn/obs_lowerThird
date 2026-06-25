@@ -3,61 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Islamic LT - Phone Controller</title>
-    <link rel="stylesheet" href="src/style.css">
+    <title>Lower Third Controller</title>
+    <link rel="stylesheet" href="src/controller.css">
 </head>
-<body class="body-controller">
+<body>
 
-    <div class="phone-container">
-        <header class="ctrl-header">
-            <h2>🕌 LT Controller</h2>
-            <div class="status-badge" id="status-obs">OBS Connected</div>
-        </header>
+    <div class="header">
+        <span class="icon">🕌</span>
+        <h1>LOWER THIRD CONTROLLER</h1>
+    </div>
 
-        <section class="ctrl-section live-panel">
-            <h3>🔴 Live On-Air</h3>
-            <div class="live-display">
-                <p id="live-name-display">Belum ada pembicara</p>
-                <span id="live-title-display">Silakan pilih dari list</span>
-            </div>
-            
-            <div class="main-actions">
-                <button class="btn btn-in" onclick="triggerAction('show')">🎬 IN (Tampil)</button>
-                <button class="btn btn-out" onclick="triggerAction('hide')">⏹️ OUT (Sembunyi)</button>
-            </div>
-        </section>
+    <div class="card">
+        <div class="section-title">
+            <span class="status-dot"></span> LIVE ON-AIR
+        </div>
+        <div class="display-box text-preview">
+            <div id="live-title">HABIB SYECH BIN ABDUL QODIR AS SEGAF</div>
+            <div id="live-desc">MAJELIS AHBAABUL MUSTHOFA</div>
+        </div>
+        <div class="btn-group">
+            <button id="btn-show-live" class="btn btn-green">SHOW</button>
+            <button id="btn-hide-live" class="btn btn-red">HIDE</button>
+        </div>
+    </div>
 
-        <section class="ctrl-section">
-            <h3>⚙️ Settings</h3>
-            <div class="settings-grid">
-                <div class="form-group-inline">
-                    <label>Auto-Hide (Detik)</label>
-                    <input type="number" id="setting-time" value="7" min="0">
-                </div>
-                <div class="form-group-inline checkbox-group">
-                    <input type="checkbox" id="setting-auto-hide" checked>
-                    <label for="setting-auto-hide">Aktifkan Timer</label>
-                </div>
+    <div class="card">
+        <div class="section-title">⚙️ SETTINGS</div>
+        <div class="grid-3">
+            <div class="input-group">
+                <label>IN-OUT (s)</label>
+                <input type="number" id="setting-inout" value="1" min="0" step="0.1">
             </div>
-            <button class="btn btn-reload" onclick="triggerAction('reload')">🔄 Auto-Reload Viewer</button>
-        </section>
+            <div class="input-group">
+                <label>ACTIVE (s)</label>
+                <input type="number" id="setting-active" value="5" min="0">
+            </div>
+            <div class="input-group">
+                <label>INTERVAL (s)</label>
+                <input type="number" id="setting-interval" value="0" min="0">
+            </div>
+        </div>
+        <div class="btn-group">
+            <button id="btn-save-settings" class="btn btn-green">SAVE</button>
+            <button id="btn-reset-settings" class="btn btn-red">RESET</button>
+        </div>
+    </div>
 
-        <section class="ctrl-section">
-            <h3>➕ Tambah Pembicara</h3>
-            <div class="form-group">
-                <input type="text" id="input-name" placeholder="Nama Pembicara...">
-            </div>
-            <div class="form-group">
-                <input type="text" id="input-title" placeholder="Sub-title / Tema Kajian...">
-            </div>
-            <button class="btn btn-add" onclick="addSpeaker()">Simpan ke List</button>
-        </section>
+    <div class="card">
+        <div class="section-title">➕ ADD TITLE AND DESCRIPTION</div>
+        <div class="input-group">
+            <input type="text" id="input-title" placeholder="TITLE">
+        </div>
+        <div class="input-group">
+            <input type="text" id="input-desc" placeholder="DESCRIPTION">
+        </div>
+        <button id="btn-add-list" class="btn btn-green btn-full">ADD</button>
+    </div>
 
-        <section class="ctrl-section">
-            <h3>👥 List Pembicara</h3>
-            <div class="speaker-list" id="speaker-list-area">
-                </div>
-        </section>
+    <div class="card">
+        <div class="section-title">📜 LISTS</div>
+        <div id="lists-container">
+            </div>
     </div>
 
     <script src="src/controller.js"></script>

@@ -1,0 +1,90 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: transparent; /* Transparan untuk OBS Source */
+    overflow: hidden;
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+    font-family: Arial, sans-serif;
+}
+
+/* Container Utama Lower Third */
+.lower-third-container {
+    position: absolute;
+    bottom: 100px;
+    left: 100px;
+    display: flex;
+    align-items: flex-end;
+    transition: all 0.5s ease-in-out; /* Default durasi transisi */
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Status Sembunyi (Animasi Keluar) */
+.lower-third-container.hide {
+    opacity: 0;
+    transform: translateX(-50px);
+    pointer-events: none;
+}
+
+/* Lingkaran Logo Ornamen */
+.logo-container {
+    width: 70px;
+    height: 70px;
+    background-color: #0b2c24;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ffcc00;
+    z-index: 3;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    /* Ganti background manual jika tidak pakai gambar */
+    background-image: radial-gradient(circle, #dfb76c 20%, transparent 20%), 
+                      radial-gradient(circle, #dfb76c 20%, transparent 20%);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+}
+
+.ornament-logo {
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+}
+
+/* Pembungkus Bar Text */
+.text-container {
+    margin-left: -25px; /* Membuat agak masuk ke belakang logo */
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+/* Bar Atas (TITLE) */
+.bar-title {
+    background: linear-gradient(135deg, #00b34a 0%, #009933 80%);
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 22px;
+    padding: 6px 40px 6px 45px;
+    clip-path: polygon(0 0, 95% 0, 100% 100%, 0% 100%);
+    white-space: nowrap;
+    min-width: 250px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Bar Bawah (DESCRIPTION) */
+.bar-desc {
+    background: linear-gradient(135deg, #f9df7b 0%, #e6c24a 100%);
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 4px 30px 4px 45px;
+    margin-top: -2px;
+    clip-path: polygon(0 0, 93% 0, 100% 100%, 0% 100%);
+    white-space: nowrap;
+    width: fit-content;
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
