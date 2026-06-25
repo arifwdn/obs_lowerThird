@@ -12,6 +12,7 @@ let lowerThirdData = JSON.parse(localStorage.getItem('lt_data')) || {
 function init() {
     updateLiveDisplay();
     renderLists();
+    fetchJadwalSholat();
     
     document.getElementById('setting-inout').value = lowerThirdData.settings.inout;
     document.getElementById('setting-active').value = lowerThirdData.settings.active;
@@ -115,6 +116,53 @@ function renderLists() {
         `;
         container.appendChild(itemEl);
     });
+}
+
+// Fitur Ambil Data API Waktu Sholat Muslim v3 (Menggunakan endpoint Sholat.org / api.myquran.com terupdate)
+async function fetchJadwalSholat() {
+    const kotaInput = document.getElementById('input-kota').value.trim().toLowerCase();
+    const btn = document.getElementById('btn-fetch-sholat');
+    if(!kotaInput) return alert("Ketik nama kota dulu!");
+
+    btn.innerText = "LOADING...";
+    btn.disabled = true;
+
+    try {
+        // Step 1: Cari ID Kota
+        const searchRes = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${kotaInput}`);
+        const searchData = await searchRes.json();
+        
+        if(!searchData.status || searchData.data.length === 0) {
+            throw new Error("Kota tidak ditemukan.");
+        }
+
+        const idKota = searchData.data[0].id;
+        const namaKota = searchData.data[0].lokasi;
+
+        // Step 2: Dapatkan jadwal harian berdasarkan tanggal hari ini
+        const tgl = new Date();
+        const y = tgl.getFullYear();
+        const m = String(tgl.getMonth() + 1).padStart(2, '0');
+        const d = String(tgl.getDate()).padStart(2, '0');
+
+        const sholatRes = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${idKota}/${y}/${m}/${d}`);
+        const sholatData = await sholatRes.json();
+
+        if(sholatData.data && sholatData.data.jadwal) {
+            const j = sholatData.data.jadwal;
+            const teksHasil = `✨ JADWAL SHOLAT UNTUK KOTA ${namaKota} & SEKITARNYA HARI INI -> IMSAK: ${j.imsak} | SUBUH: ${j.subuh} | TERBIT: ${j.terbit} | DZUHUR: ${j.dzuhur} | ASHAR: ${j.ashar} | MAGHRIB: ${j.maghrib} | ISYA: ${j.isya} --- Silakan laksanakan ibadah tepat pada waktunya.`;
+            
+            document.getElementById('running-text-preview').value = teksHasil;
+            lowerThirdData.runningText = teksHasil;
+            saveData();
+        }
+
+    } catch (error) {
+        alert("Gagal memuat API Jadwal Sholat: " + error.message);
+    } finally {
+        btn.innerText = "🔄 GET DATA";
+        btn.disabled = false;
+    }
 }
 
 window.onload = init;
